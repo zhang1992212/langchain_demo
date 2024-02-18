@@ -1,3 +1,5 @@
+import json
+from json import JSONDecodeError
 import os
 import getopt
 import sys
@@ -35,10 +37,17 @@ def init_demo(argv):
             sys.exit()
         elif opt in ("-d", "--demo"):
             i = arg
-    api_key = "sk-NXQlVDPLjVyMjRMmB8F89974E1Ff4dEeBd1060Cd9fD2073b"
-    openai_api_base = "https://openkey.cloud/v1"
-    os.environ["OPENAI_API_KEY"] = api_key
-    os.environ["OPENAI_API_BASE"] = openai_api_base
+
+    config = {}
+    with open("api_key.json", 'r') as f:
+        try:
+            config = json.load(f)
+        except JSONDecodeError as e:
+            print("配置文件无内容")
+            sys.exit(2)
+
+    os.environ["OPENAI_API_KEY"] = config["api_key"]
+    os.environ["OPENAI_API_BASE"] = config["open_api_base"]
 
     base_demo = Base()
     input_value = {}
